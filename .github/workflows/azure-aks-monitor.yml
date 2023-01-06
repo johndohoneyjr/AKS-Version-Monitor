@@ -17,16 +17,16 @@ jobs:
           azure-cli-version: latest
       - name: Get AKS cluster information
         run: |
-          az login --service-principal -u $SERVICE_PRINCIPAL_ID -p $SERVICE_PRINCIPAL_SECRET --tenant $TENANT_ID
-          az account set --subscription $SUBSCRIPTION_ID
-          aks_cluster_info=$(az aks show --name $AKS_CLUSTER_NAME --resource-group $RESOURCE_GROUP --output json)
+          az login --service-principal -u ${{ secrets.SERVICE_PRINCIPAL_ID }}  -p ${{ secrets.SERVICE_PRINCIPAL_SECRET }} --tenant ${{ secrets.TENANT_ID }}
+          az account set --subscription ${{ secrets.SUBSCRIPTION_ID }}
+          aks_cluster_info=$(az aks show --name ${{ secrets.AKS_CLUSTER_NAME }} --resource-group ${{ secrets.RESOURCE_GROUP }} --output json)
           aks_cluster_version=$(echo $aks_cluster_info | jq -r '.kubernetesVersion')
-          aks_cluster_upgrades=$(az aks get-upgrades --name $AKS_CLUSTER_NAME --resource-group $RESOURCE_GROUP --output json)
+          aks_cluster_upgrades=$(az aks get-upgrades --name ${{ secrets.AKS_CLUSTER_NAME }} --resource-group ${{ secrets.RESOURCE_GROUP }} --output json)
       - name: Get available patches
         run: |
           available_patches=$(echo $aks_cluster_upgrades | jq -r '.upgrades[] | select(.isPreview==false) | .name')
           echo "Available patches: $available_patches"
       - name: Get available revisions
         run: |
-          available_revisions=$(az aks get-versions --location $LOCATION --output json | jq -r '.orchestrators[] | select(.isPreview==false) | .orchestratorVersion')
+          available_revisions=$(az aks get-versions --location ${{ secrets.LOCATION }} --output json | jq -r '.orchestrators[] | select(.isPreview==false) | .orchestratorVersion')
           echo "Available revisions: $available_revisions"
