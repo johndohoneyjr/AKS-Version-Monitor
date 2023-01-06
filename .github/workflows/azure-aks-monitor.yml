@@ -30,7 +30,7 @@ jobs:
       - name: Get available patches
         run: |
           aks_cluster_upgrades=$(az aks get-upgrades --name ${{ secrets.AKS_CLUSTER_NAME }} --resource-group ${{ secrets.RESOURCE_GROUP }} --output json)
-          available_patches=$(echo $aks_cluster_upgrades | jq -r '.upgrades[]')
+          available_patches=$(echo $aks_cluster_upgrades | jq -r '.controlPlaneProfile.upgrades[]')
           echo "Available patches: $available_patches"
       - name: Get available revisions
         run: |
