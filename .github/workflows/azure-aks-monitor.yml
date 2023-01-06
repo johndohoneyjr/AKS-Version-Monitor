@@ -10,7 +10,7 @@ jobs:
   aks-monitor:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3.3.0
       - name: Set up Azure CLI
         uses: elstudio/action-install-azure-cli@v1
       - name: Get AKS cluster information
