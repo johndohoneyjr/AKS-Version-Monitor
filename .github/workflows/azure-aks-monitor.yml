@@ -17,6 +17,11 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.CLUSTER_SERVICE_PRINCIPAL }}
+      - name: Install JQ into Runner
+        run: |
+          sudo apt-get update
+          sudo apt-get install jq
+          jq
       - name: Get AKS cluster information
         run: |
           aks_cluster_info=$(az aks show --name ${{ secrets.AKS_CLUSTER_NAME }} --resource-group ${{ secrets.RESOURCE_GROUP }} --output json)
