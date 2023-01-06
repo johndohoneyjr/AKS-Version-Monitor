@@ -1,5 +1,7 @@
 # Azure AKS Version Monitor
 
+[![Azure AKS Monitor](https://github.com/johndohoneyjr/AKS-Version-Monitor/actions/workflows/azure-aks-monitor.yml/badge.svg)](https://github.com/johndohoneyjr/AKS-Version-Monitor/actions/workflows/azure-aks-monitor.yml)
+
 ## Installation
 ```
 SERVICE_PRINCIPAL_ID: The ID of the service principal used to authenticate with Azure.
