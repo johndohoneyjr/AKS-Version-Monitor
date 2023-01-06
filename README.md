@@ -4,15 +4,12 @@
 
 ## Installation
 ```
-SERVICE_PRINCIPAL_ID: The ID of the service principal used to authenticate with Azure.
+Create a Service Principal -- with the scope appropriate for your organization
+az ad sp create-for-rbac --name My-AKS-BOT --role Contributor  --sdk-auth --scopes /subscriptions/zzz-aaa-www-rrrr
 
-SERVICE_PRINCIPAL_SECRET: The secret of the service principal used to authenticate with Azure.
-
-TENANT_ID: The ID of the tenant associated with your Azure subscription.
-
-SUBSCRIPTION_ID: The ID of the Azure subscription that contains your AKS cluster.
+The output is a JSON DOcument, paste the entirety of the JSON into the Action Secret: CLUSTER_SERVICE_PRINCIPAL 
 ```
-Finally, you will need to set the following environment variables in your repository settings:
+Finally, you will need to set the following secrets in your repository secrets settings:
 
 ```
 AKS_CLUSTER_NAME: The name of your AKS cluster.
