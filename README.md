@@ -19,3 +19,17 @@ RESOURCE_GROUP: The resource group that contains your AKS cluster.
 LOCATION: The location of your AKS cluster.
 ```
 This action will run every day at midnight (UTC) and retrieve information about your AKS cluster, including the current revision and patch level, as well as a list of available patches and revisions. The available patches and revisions will be printed to the log.
+
+## Integrations
+
+This could be interfaced with Slack by adding the step:
+```
+ - name: Send to Slack
+        uses: rtCamp/action-slack-notify@v1
+        with:
+          slack_webhook: ${{ secrets.SLACK_WEBHOOK }}
+          message: |
+            Current revision: $aks_cluster_version
+            Available patches: $available_patches
+            Available revisions: $available_revisions
+```
