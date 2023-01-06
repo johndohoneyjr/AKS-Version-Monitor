@@ -26,14 +26,13 @@ jobs:
         run: |
           aks_cluster_info=$(az aks show --name ${{ secrets.AKS_CLUSTER_NAME }} --resource-group ${{ secrets.RESOURCE_GROUP }} --output json)
           aks_cluster_version=$(echo $aks_cluster_info | jq -r '.kubernetesVersion')
-          aks_cluster_upgrades=$(az aks get-upgrades --name ${{ secrets.AKS_CLUSTER_NAME }} --resource-group ${{ secrets.RESOURCE_GROUP }} --output json)
-          echo "Current Version: $aks_cluster_version"
-          echo "Available patcpgrades: $aks_cluster_upgrades"
+          echo "Current Kubernetes Version: $aks_cluster_version"
       - name: Get available patches
         run: |
-          available_patches=$(echo $aks_cluster_upgrades | jq -r '.upgrades[] | select(.isPreview==false) | .name')
+          aks_cluster_upgrades=$(az aks get-upgrades --name ${{ secrets.AKS_CLUSTER_NAME }} --resource-group ${{ secrets.RESOURCE_GROUP }} --output json)
+          available_patches=$(echo $aks_cluster_upgrades | jq -r '.upgrades[]')
           echo "Available patches: $available_patches"
       - name: Get available revisions
         run: |
-          available_revisions=$(az aks get-versions --location ${{ secrets.LOCATION }} --output json | jq -r '.orchestrators[] | select(.isPreview==false) | .orchestratorVersion')
+          available_revisions=$(az aks get-versions --location ${{ secrets.LOCATION }} --output json | jq -r '.orchestrators[]')
           echo "Available revisions: $available_revisions"
