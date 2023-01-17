@@ -37,3 +37,4 @@ This could be interfaced with Slack by adding the step:
  First, before production, remove "workflow_dispatch" as this is a test artifact
  
  Second, run the commands by hand, you might want to adjust the jq query on the returned JSON payload to adjust to your requirements.
+"# attendee-johndohoneyjr" 
