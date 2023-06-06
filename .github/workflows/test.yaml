@@ -1,4 +1,4 @@
-name: Azure AKS Monitor
+name: Webhook Test
 
 on:
   workflow_dispatch:
