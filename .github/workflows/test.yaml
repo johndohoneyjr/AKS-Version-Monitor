@@ -11,15 +11,18 @@ jobs:
       - uses: actions/checkout@v3.3.0
       - name: Set up Azure CLI
         uses: elstudio/action-install-azure-cli@v1
+        
       - name: AZ Login
         uses: azure/login@v1
         with:
           creds: ${{ secrets.CLUSTER_SERVICE_PRINCIPAL }}
+          
       - name: Install JQ into Runner
         run: |
           sudo apt-get update
           sudo apt-get install jq
           jq
+          
       - name: Get AKS cluster information
         id: vers
         run: |
@@ -43,15 +46,6 @@ jobs:
           available_revisions=$(az aks get-versions --location ${{ secrets.LOCATION }} --output json | jq -r '.orchestrators[]')
           echo "Available revisions: $available_revisions"
           echo "kubeRevs=$available_revisions" >> $GITHUB_OUTPUT
-        
-      - name: Test1
-        id: test1
-        run: |
-          h=$(az --version)
-          echo "::set-output name=h::$h"
-      - name: Test2
-        run: |
-          echo "${{ steps.test1.outputs.h }}"
           
       - name: Send data to MS Teams webhook
         uses: FTsbrown/msteams-action@master
