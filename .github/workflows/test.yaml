@@ -7,6 +7,11 @@ on:
 jobs:
   aks-monitor:
     runs-on: ubuntu-latest
+    outputs:
+      clusterInfo: ${{ steps.vers.outputs.kubeVer }}
+      patchInfo: ${{ steps.patch.outputs.kubePatch }}
+      revisionInfo: ${{ steps.revs.outputs.kubeRevs }}
+      
     steps:
       - uses: actions/checkout@v3.3.0
       - name: Set up Azure CLI
@@ -52,4 +57,4 @@ jobs:
         with:
           MS_TEAMS_WEBHOOK: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
           TITLE: 'Kubernetes Revision and Update Possibilities'
-          BODY: $GITHUB_OUTPUT
+          BODY: echo "$clusterInfo \n-- $patchInfo \n-- $revisionInfo"
