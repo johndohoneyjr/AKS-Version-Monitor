@@ -26,8 +26,8 @@ jobs:
           aks_cluster_info=$(az aks show --name ${{ secrets.AKS_CLUSTER_NAME }} --resource-group ${{ secrets.RESOURCE_GROUP }} --output json)
           aks_cluster_version=$(echo $aks_cluster_info | jq -r '.kubernetesVersion')
           curVer=$( echo "Current Kubernetes Version: $aks_cluster_version")
-          echo $curver
-          echo "::set-output name=curver::$curver"
+          echo $curVer
+          echo "kubeVer=$curVer" >> $GITHUB_OUTPUT
           
       - name: Get available patches
         id: patch
@@ -35,14 +35,14 @@ jobs:
           aks_cluster_upgrades=$(az aks get-upgrades --name ${{ secrets.AKS_CLUSTER_NAME }} --resource-group ${{ secrets.RESOURCE_GROUP }} --output json)
           available_patches=$(echo $aks_cluster_upgrades | jq -r '.controlPlaneProfile.upgrades[]')
           echo "Available patches: $available_patches"
-          echo "::set-output name=available_patches::$available_patches"
+          echo "kubePatch=$available_patches" >> $GITHUB_OUTPUT
           
       - name: Get available revisions
         id: revs
         run: |
           available_revisions=$(az aks get-versions --location ${{ secrets.LOCATION }} --output json | jq -r '.orchestrators[]')
           echo "Available revisions: $available_revisions"
-          echo "::set-output name=available_revisions::$available_revisions"
+          echo "kubeRevs=$available_revisions" >> $GITHUB_OUTPUT
         
       - name: Test1
         id: test1
@@ -58,7 +58,4 @@ jobs:
         with:
           MS_TEAMS_WEBHOOK: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
           TITLE: 'Kubernetes Revision and Update Possibilities'
-          BODY: |
-            ${{ steps.vers.outputs.curver }}
-            ${{ steps.revs.outputs.available_revisions }}
-            ${{ steps.patch.outputs.available_patches }}
+          BODY: $GITHUB_OUTPUT
