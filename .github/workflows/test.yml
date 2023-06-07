@@ -51,4 +51,3 @@ jobs:
           available_revisions=$(az aks get-versions --location ${{ secrets.LOCATION }} --output json | jq -r '.orchestrators[]')
           echo "Available revisions: $available_revisions"
           echo kubeRevs=$available_revisions >> $GITHUB_OUTPUT
-     
