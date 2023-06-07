@@ -52,13 +52,13 @@ jobs:
       - name: Test2
         run: |
           echo "${{ steps.test1.outputs.h }}"
+          
       - name: Send data to MS Teams webhook
-        uses: opsless/ms-teams-github-actions@v1.0.0
+        uses: FTsbrown/msteams-action@master
         with:
-          webhook_uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
-          title: 'Kubernetes Revision and Update Possibilities'
-          summary: 'Cluster Orchestrations that Upgrade or apply Revisions to your AKS Cluster '
-          text: |
+          MS_TEAMS_WEBHOOK: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
+          TITLE: 'Kubernetes Revision and Update Possibilities'
+          BODY: |
             ${{ steps.vers.outputs.curver }}
             ${{ steps.revs.outputs.available_revisions }}
             ${{ steps.patch.outputs.available_patches }}
