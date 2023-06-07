@@ -51,13 +51,6 @@ jobs:
           available_revisions=$(az aks get-versions --location ${{ secrets.LOCATION }} --output json | jq -r '.orchestrators[]')
           echo "Available revisions: $available_revisions"
           echo kubeRevs=$available_revisions >> $GITHUB_OUTPUT
-          
-      - name: Send data to MS Teams webhook
-        uses: FTsbrown/msteams-action@master
-        with:
-          MS_TEAMS_WEBHOOK: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
-          TITLE: 'Kubernetes Revision and Update Possibilities'
-          BODY: ${{ revisionInfo }} 
 
       - name: Send a message to Microsoft Teams
         uses: aliencube/microsoft-teams-actions@v0.8.0
