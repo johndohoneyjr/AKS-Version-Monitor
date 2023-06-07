@@ -57,4 +57,4 @@ jobs:
         with:
           MS_TEAMS_WEBHOOK: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
           TITLE: 'Kubernetes Revision and Update Possibilities'
-          BODY: echo "$clusterInfo \n-- $patchInfo \n-- $revisionInfo"
+          BODY: $revisionInfo
