@@ -21,19 +21,28 @@ jobs:
           sudo apt-get install jq
           jq
       - name: Get AKS cluster information
+        id: vers
         run: |
           aks_cluster_info=$(az aks show --name ${{ secrets.AKS_CLUSTER_NAME }} --resource-group ${{ secrets.RESOURCE_GROUP }} --output json)
           aks_cluster_version=$(echo $aks_cluster_info | jq -r '.kubernetesVersion')
-          echo "Current Kubernetes Version: $aks_cluster_version"
+          curVer=$( echo "Current Kubernetes Version: $aks_cluster_version")
+          echo $curver
+          echo "::set-output name=curver::$curver"
+          
       - name: Get available patches
+        id: patch
         run: |
           aks_cluster_upgrades=$(az aks get-upgrades --name ${{ secrets.AKS_CLUSTER_NAME }} --resource-group ${{ secrets.RESOURCE_GROUP }} --output json)
           available_patches=$(echo $aks_cluster_upgrades | jq -r '.controlPlaneProfile.upgrades[]')
           echo "Available patches: $available_patches"
+          echo "::set-output name=available_patches::$available_patches"
+          
       - name: Get available revisions
+        id: revs
         run: |
           available_revisions=$(az aks get-versions --location ${{ secrets.LOCATION }} --output json | jq -r '.orchestrators[]')
           echo "Available revisions: $available_revisions"
+          echo "::set-output name=available_revisions::$available_revisions"
         
       - name: Test1
         id: test1
@@ -47,7 +56,9 @@ jobs:
         uses: opsless/ms-teams-github-actions@v1.0.0
         with:
           webhook_uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
-          title: 'Data from CLI commands'
-          summary: 'Data from CLI commands'
+          title: 'Kubernetes Revision and Update Possibilities'
+          summary: 'Cluster Orchestrations that Upgrade or apply Revisions to your AKS Cluster '
           text: |
-            ${{ steps.<step_id>.outputs.<output_name> }}
+            ${{ steps.vers.outputs.curver }}
+            ${{ steps.revs.outputs.available_revisions }}
+            ${{ steps.patch.outputs.available_patches }}
