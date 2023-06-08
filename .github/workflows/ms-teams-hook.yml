@@ -89,7 +89,7 @@ jobs:
         uses: simbo/msteams-message-card-action@latest
         env:
           MY_AWESOME_BUTTON: Awesome https://this-is-so.awesome/
-          MESSAGEOUT: ${{MESSAGE}}
+          MESSAGEOUT: ${{env.MESSAGE}}
         with:
           webhook:  ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
           title:  'Kubernetes Cluster Updates'
