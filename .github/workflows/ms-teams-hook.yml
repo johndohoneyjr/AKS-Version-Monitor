@@ -60,6 +60,7 @@ jobs:
           KVER: ${{needs.job1.outputs.clusterInfo}}
           PATCH: ${{needs.job1.outputs.kubePatch}}
           REV: ${{needs.job1.outputs.kubeRevs}}
+        run: echo '$KVER -- $PATCH -- $REV'
       - name: Send a message to Microsoft Teams
         uses: aliencube/microsoft-teams-actions@v0.8.0
         with:
