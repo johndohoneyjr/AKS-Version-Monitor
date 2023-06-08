@@ -37,7 +37,7 @@ jobs:
         run: |
           aks_cluster_upgrades=$(az aks get-upgrades --name ${{ secrets.AKS_CLUSTER_NAME }} --resource-group ${{ secrets.RESOURCE_GROUP }} --output json)
           availablepatches=$(echo $aks_cluster_upgrades | jq -r '.controlPlaneProfile.upgrades[]')
-          echo kubePatch=availablepatches >> $GITHUB_ENV
+          echo kubePatch=$availablepatches >> $GITHUB_ENV
           
       - name: Get available revisions
         id: revs
@@ -57,11 +57,11 @@ jobs:
           title: 'Upgrade Opportunities for:  ${{env.kubeVer}}'
           message: |
            Patches:
-           
+           ...
            ${{env.kubePatch}}
-           
+           ...
            Revision Upgrade Path:
-           
+           ...
            ${{env.kubeRevs}}
           color: ff69b4
           buttons: |
