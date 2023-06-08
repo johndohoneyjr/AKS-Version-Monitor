@@ -1,9 +1,6 @@
-name: Single MS Teams Webhook
-
+name: MS Teams Webhook
 on:
   workflow_dispatch:
-
-
 jobs:
   acquire-kubernetes-data: 
     runs-on: ubuntu-latest
@@ -51,8 +48,8 @@ jobs:
       - name: 📣 Send teams notification
         uses: simbo/msteams-message-card-action@latest
         env:
-          MY_AWESOME_BUTTON: Awesome https://this-is-so.awesome/
-          MY_SPECIAL_BUTTON: Cool https://this-is-so.cool/
+          RELEASE_BUTTON: AKS-Releases https://releases.aks.azure.com/
+          ISSUES_BUTTON: AKS-Issues https://github.com/Azure/AKS/issues
           MESSAGEOUT: 'This will work'
         with:
           webhook:  ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
@@ -65,6 +62,6 @@ jobs:
            ${{env.kubeRevs}}
           color: ff69b4
           buttons: |
-            ${{ env.MY_SPECIAL_BUTTON }}
-            ${{ env.MY_AWESOME_BUTTON }}
+            ${{ env.ISSUES_BUTTON }}
+            ${{ env.RELEASE_BUTTON }}
   
