@@ -64,6 +64,7 @@ jobs:
           KVER: ${{needs.acquire-kubernetes-data.outputs.clusterInfo}}
           PATCH: ${{needs.acquire-kubernetes-data.outputs.kubePatch}}
           REV: ${{needs.acquire-kubernetes-data.outputs.kubeRevs}}
+          SECRET: ${{ secrets.PGP_SECRET_SIGNING_PASSPHRASE }}
         run: |
           echo $KVER
           PATCH=$(gpg --decrypt --quiet --batch --passphrase "$SECRET" --output - <(echo "${{ needs.acquire-kubernetes-data.outputs.patchInfo }}" | base64 --decode))
