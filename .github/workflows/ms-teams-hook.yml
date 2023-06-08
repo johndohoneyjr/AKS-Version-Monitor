@@ -69,14 +69,13 @@ jobs:
           echo $KVER
           PATCH=$(gpg --decrypt --quiet --batch --passphrase "$SECRET" --output - <(echo "${{ needs.acquire-kubernetes-data.outputs.patchInfo }}" | base64 --decode))
           REV=$(gpg --decrypt --quiet --batch --passphrase "$SECRET" --output - <(echo "${{ needs.acquire-kubernetes-data.outputs.revisionInfo }}" | base64 --decode))
+          echo "After Decryption"
           echo $PATCH
           echo $REV
-          MESSAGE='$KVER $PATCH $REV'
-          echo $MESSAGE
       - name: Send a message to Microsoft Teams
         uses: aliencube/microsoft-teams-actions@v0.8.0
         with:
           webhook_uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
           title: 'Kubernetes Cluster Updates'
           summary: 'Patch Information'
-          text: $MESSAGE
+          text: ${{ KVER }}
