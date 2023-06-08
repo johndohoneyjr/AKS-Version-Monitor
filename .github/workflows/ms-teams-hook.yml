@@ -1,4 +1,4 @@
-name: MS-Teams-Webhook
+name: MS Teams Webhook
 
 on:
   workflow_dispatch:
