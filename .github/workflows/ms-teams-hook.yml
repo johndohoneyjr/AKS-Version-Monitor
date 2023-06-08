@@ -52,18 +52,18 @@ jobs:
           echo "Available revisions: $available_revisions"
           echo kubeRevs=$available_revisions >> $GITHUB_OUTPUT
   
-  job2:
-    runs_on: ubuntu-latest
+  job2: 
+    runs-on: ubuntu-latest
     needs: job1
-      steps:
+    steps:
       - env:
-        KVER: ${{needs.job1.outputs.clusterInfo}}
-        PATCH: ${{needs.job1.outputs.kubePatch}}
-        REV: ${{needs.job1.outputs.kubeRevs}}
+          KVER: ${{needs.job1.outputs.clusterInfo}}
+          PATCH: ${{needs.job1.outputs.kubePatch}}
+          REV: ${{needs.job1.outputs.kubeRevs}}
       - name: Send a message to Microsoft Teams
         uses: aliencube/microsoft-teams-actions@v0.8.0
         with:
           webhook_uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
           title: 'Kubernetes Cluster Updates'
           summary: 'Patch Information'
-          text: 'Hello MS Teams'
+          text: '$KVER '
