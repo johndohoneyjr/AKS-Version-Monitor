@@ -60,17 +60,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: acquire-kubernetes-data
     steps:
-      - env:
-          KVER: ${{needs.acquire-kubernetes-data.outputs.clusterInfo}}
-          PATCH: ${{needs.acquire-kubernetes-data.outputs.patchInfo}}
-          REV: ${{needs.acquire-kubernetes-data.outputs.revisionInfo}}
-          SECRET: ${{ secrets.PGP_SECRET_SIGNING_PASSPHRASE }}
-        run: |
-          echo $KVER
-          #PATCH=$(gpg --decrypt --quiet --batch --passphrase "$SECRET" --output - <(echo "${{ needs.acquire-kubernetes-data.outputs.patchInfo }}" | base64 --decode))
-          #REV=$(gpg --decrypt --quiet --batch --passphrase "$SECRET" --output - <(echo "${{ needs.acquire-kubernetes-data.outputs.revisionInfo }}" | base64 --decode))
-
-
       - name: 🪣 Send a message to Microsoft Teams
         env:
           KVER: ${{needs.acquire-kubernetes-data.outputs.clusterInfo}}
@@ -83,7 +72,7 @@ jobs:
           PATCH=$(gpg --decrypt --quiet --batch --passphrase "$SECRET" --output - <(echo "${{ needs.acquire-kubernetes-data.outputs.patchInfo }}" | base64 --decode))
           REV=$(gpg --decrypt --quiet --batch --passphrase "$SECRET" --output - <(echo "${{ needs.acquire-kubernetes-data.outputs.revisionInfo }}" | base64 --decode))
           echo \"MESSAGE=$ { { env.KVER }} $ { { env.PATCH }}\" >> $GITHUB_ENV
-          echo $MESSAGE
+          echo $ { { env.MESSAGE }}
           
       - name: 📣 Send teams notification
         uses: simbo/msteams-message-card-action@latest
