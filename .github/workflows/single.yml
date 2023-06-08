@@ -33,30 +33,21 @@ jobs:
         run: |
           aks_cluster_info=$(az aks show --name ${{ secrets.AKS_CLUSTER_NAME }} --resource-group ${{ secrets.RESOURCE_GROUP }} --output json)
           aks_cluster_version=$(echo $aks_cluster_info | jq -r '.kubernetesVersion')
-          curVer=$( echo "Current Kubernetes Version: $aks_cluster_version")
-          echo $curVer
-          echo kubeVer=$curVer >> $GITHUB_OUTPUT
+          echo kubeVer=$( echo "Current Kubernetes Version: $aks_cluster_version") >> $GITHUB_OUTPUT
           
       - name: Get available patches
         id: patch
         run: |
           aks_cluster_upgrades=$(az aks get-upgrades --name ${{ secrets.AKS_CLUSTER_NAME }} --resource-group ${{ secrets.RESOURCE_GROUP }} --output json)
           availablepatches=$(echo $aks_cluster_upgrades | jq -r '.controlPlaneProfile.upgrades[]')
-          echo "Available patches: $available_patches"
-          available_patches=$(gpg --symmetric --batch --passphrase "$SECRET" --output - <(echo "$availablepatches") | base64 -w0)
-          echo kubePatch=$available_patches >> $GITHUB_OUTPUT
-        env:
-          SECRET: ${{ secrets.PGP_SECRET_SIGNING_PASSPHRASE }}
+          echo kubePatch=availablepatches >> $GITHUB_OUTPUT
           
       - name: Get available revisions
         id: revs
         run: |
           availablerevisions=$(az aks get-versions --location ${{ secrets.LOCATION }} --output json | jq -r '.orchestrators[]')
-          available_revisions=$(gpg --symmetric --batch --passphrase "$SECRET" --output - <(echo "$availablerevisions") | base64 -w0)
-          echo kubeRevs=$available_revisions >> $GITHUB_OUTPUT
-        env:
-          SECRET: ${{ secrets.PGP_SECRET_SIGNING_PASSPHRASE }}
-          
+          echo kubeRevs=$availablerevisions >> $GITHUB_OUTPUT
+
       - name: 📣 Send teams notification
         uses: simbo/msteams-message-card-action@latest
         env:
