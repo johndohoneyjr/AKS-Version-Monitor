@@ -62,13 +62,13 @@ jobs:
     steps:
       - env:
           KVER: ${{needs.acquire-kubernetes-data.outputs.clusterInfo}}
-          PATCH: ${{needs.acquire-kubernetes-data.outputs.kubePatch}}
-          REV: ${{needs.acquire-kubernetes-data.outputs.kubeRevs}}
+          PATCH: ${{needs.acquire-kubernetes-data.outputs.patchInfo}}
+          REV: ${{needs.acquire-kubernetes-data.outputs.revisionInfo}}
           SECRET: ${{ secrets.PGP_SECRET_SIGNING_PASSPHRASE }}
         run: |
           echo $KVER
           PATCH=$(gpg --decrypt --quiet --batch --passphrase "$SECRET" --output - <(echo "${{ needs.acquire-kubernetes-data.outputs.patchInfo }}" | base64 --decode))
-          REV=$(gpg --decrypt --quiet --batch --passphrase "$SECRET" --output - <(echo "${{ needs.acquire-kubernetes-data.outputs.kubeRevs }}" | base64 --decode))
+          REV=$(gpg --decrypt --quiet --batch --passphrase "$SECRET" --output - <(echo "${{ needs.acquire-kubernetes-data.outputs.revisionInfo }}" | base64 --decode))
           echo $PATCH
           echo $REV
           MESSAGE='$KVER $PATCH $REV'
