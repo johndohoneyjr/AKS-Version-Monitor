@@ -5,7 +5,7 @@ on:
 
 
 jobs:
-  aks-monitor:
+  job1: 
     runs-on: ubuntu-latest
     outputs:
       clusterInfo: ${{ steps.vers.outputs.kubeVer }}
@@ -51,7 +51,15 @@ jobs:
           available_revisions=$(az aks get-versions --location ${{ secrets.LOCATION }} --output json | jq -r '.orchestrators[]')
           echo "Available revisions: $available_revisions"
           echo kubeRevs=$available_revisions >> $GITHUB_OUTPUT
-
+  
+  job2:
+    runs_on: ubuntu-latest
+    needs: job1
+      steps:
+      - env:
+        KVER: ${{needs.job1.outputs.clusterInfo}}
+        PATCH: ${{needs.job1.outputs.kubePatch}}
+        REV: ${{needs.job1.outputs.kubeRevs}}
       - name: Send a message to Microsoft Teams
         uses: aliencube/microsoft-teams-actions@v0.8.0
         with:
