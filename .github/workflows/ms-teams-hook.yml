@@ -73,9 +73,6 @@ jobs:
           echo 'REV=$(gpg --decrypt --quiet --batch --passphrase "$SECRET" --output - <(echo "${{ needs.acquire-kubernetes-data.outputs.revisionInfo }}" | base64 --decode))' >> $GITHUB_ENV
           
           echo \"MESSAGE=$ { { env.KVER }} $ { { env.PATCH }}\" >> $GITHUB_ENV
-          echo $ { { env.MESSAGE }}
-          echo $(MESSAGE)
-          echo $[env.MESSAGE]
           
       - name: 📣 Send teams notification
         uses: simbo/msteams-message-card-action@latest
@@ -85,7 +82,13 @@ jobs:
         with:
           webhook:  ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
           title:  'Kubernetes Cluster Updates'
-          message: ${{env.MESSAGEOUT}}
+          message: |
+            one
+            $KVER
+            two
+            ${{env.KVER}}
+            three
+            $(KVER)
           color: ff69b4
           buttons: |
             ${{ env.MY_SPECIAL_BUTTON }}
