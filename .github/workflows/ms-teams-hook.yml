@@ -5,7 +5,7 @@ on:
 
 
 jobs:
-  job1: 
+  acquire-kubernetes-data: 
     runs-on: ubuntu-latest
     outputs:
       clusterInfo: ${{ steps.vers.outputs.kubeVer }}
@@ -41,30 +41,42 @@ jobs:
         id: patch
         run: |
           aks_cluster_upgrades=$(az aks get-upgrades --name ${{ secrets.AKS_CLUSTER_NAME }} --resource-group ${{ secrets.RESOURCE_GROUP }} --output json)
-          available_patches=$(echo $aks_cluster_upgrades | jq -r '.controlPlaneProfile.upgrades[]')
+          availablepatches=$(echo $aks_cluster_upgrades | jq -r '.controlPlaneProfile.upgrades[]')
           echo "Available patches: $available_patches"
+          available_patches=$(gpg --symmetric --batch --passphrase "$SECRET" --output - <(echo "$availablepatches") | base64 -w0)
           echo kubePatch=$available_patches >> $GITHUB_OUTPUT
+        env:
+          SECRET: ${{ secrets.PGP_SECRET_SIGNING_PASSPHRASE }}
           
       - name: Get available revisions
         id: revs
         run: |
-          available_revisions=$(az aks get-versions --location ${{ secrets.LOCATION }} --output json | jq -r '.orchestrators[]')
-          echo "Available revisions: $available_revisions"
+          availablerevisions=$(az aks get-versions --location ${{ secrets.LOCATION }} --output json | jq -r '.orchestrators[]')
+          available_revisions=$(gpg --symmetric --batch --passphrase "$SECRET" --output - <(echo "$availablerevisions") | base64 -w0)
           echo kubeRevs=$available_revisions >> $GITHUB_OUTPUT
-  
-  job2: 
+        env:
+          SECRET: ${{ secrets.PGP_SECRET_SIGNING_PASSPHRASE }}
+  dispatch-teams-report: 
     runs-on: ubuntu-latest
-    needs: job1
+    needs: acquire-kubernetes-data
     steps:
       - env:
-          KVER: ${{needs.job1.outputs.clusterInfo}}
-          PATCH: ${{needs.job1.outputs.kubePatch}}
-          REV: ${{needs.job1.outputs.kubeRevs}}
-        run: echo '$KVER -- $PATCH -- $REV'
+          KVER: ${{needs.acquire-kubernetes-data.outputs.clusterInfo}}
+          PATCH: ${{needs.acquire-kubernetes-data.outputs.kubePatch}}
+          REV: ${{needs.acquire-kubernetes-data.outputs.kubeRevs}}
+          MESSAGE: ${{}}
+        run: |
+          echo $KVER
+          PATCH=$(gpg --decrypt --quiet --batch --passphrase "$SECRET" --output - <(echo "${{ needs.acquire-kubernetes-data.outputs.patchInfo }}" | base64 --decode))
+          REV=$(gpg --decrypt --quiet --batch --passphrase "$SECRET" --output - <(echo "${{ needs.acquire-kubernetes-data.outputs.kubeRevs }}" | base64 --decode))
+          echo $PATCH
+          echo $REV
+          MESSAGE='$KVER $PATCH $REV'
+          echo $MESSAGE
       - name: Send a message to Microsoft Teams
         uses: aliencube/microsoft-teams-actions@v0.8.0
         with:
           webhook_uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
           title: 'Kubernetes Cluster Updates'
           summary: 'Patch Information'
-          text: '$KVER '
+          text: $MESSAGE
