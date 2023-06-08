@@ -54,7 +54,7 @@ jobs:
           MESSAGEOUT: 'This will work'
         with:
           webhook:  ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
-          title: Upgrade Opportunities for:  ${{env.kubeVer}}
+          title: 'Upgrade Opportunities for:  ${{env.kubeVer}}'
           message: |
            Patches:
            
