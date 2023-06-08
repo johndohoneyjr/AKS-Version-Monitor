@@ -43,6 +43,7 @@ jobs:
         id: revs
         run: |
           availablerevisions=$(az aks get-versions --location ${{ secrets.LOCATION }} --output json | jq -r '.orchestrators[]')
+          echo $availablerevisions
           echo kubeRevs=$availablerevisions >> $GITHUB_ENV
 
       - name: 📣 Send teams notification
@@ -53,12 +54,14 @@ jobs:
           MESSAGEOUT: 'This will work'
         with:
           webhook:  ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
-          title: ${{env.kubeVer}}
+          title: Upgrade Opportunities for:  ${{env.kubeVer}}
           message: |
-           Upgrade Opportunities for: ${{env.kubeVer}}
            Patches:
+           
            ${{env.kubePatch}}
+           
            Revision Upgrade Path:
+           
            ${{env.kubeRevs}}
           color: ff69b4
           buttons: |
