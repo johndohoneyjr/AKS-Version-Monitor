@@ -81,14 +81,13 @@ jobs:
           MESSAGEOUT: 'This will work'
         with:
           webhook:  ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
-          title:  'Kubernetes Cluster Updates'
+          title: ${{env.KVER}}
           message: |
-            one
-            $KVER
-            two
-            ${{env.KVER}}
-            three
-            $(KVER)
+           Upgrade Opportunities for: ${{env.KVER}}
+           Patches:
+           ${{env.PATCH}}
+           Revision Upgrade Path:
+           ${{env.REV}}
           color: ff69b4
           buttons: |
             ${{ env.MY_SPECIAL_BUTTON }}
