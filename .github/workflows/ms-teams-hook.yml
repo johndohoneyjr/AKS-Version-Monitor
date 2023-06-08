@@ -72,28 +72,20 @@ jobs:
           echo "After Decryption"
           echo $PATCH
           echo $REV
-      - name: Send a message to Microsoft Teams
-        uses: aliencube/microsoft-teams-actions@v0.8.0
-        with:
-          webhook_uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
-          title: 'Kubernetes Cluster Updates'
-          summary: 'Patch Information'
-          text: |
-            ${{ env.KVER }}
-            ${{ env.PATCH }}
-            ${{ env.REV }}
-      - name: 🪣 Set env vars
-        run: |
-          echo "MY_SPECIAL_BUTTON=Cool https://this-is-so.cool/" >> $GITHUB_ENV
 
+      - name: 🪣 Send a message to Microsoft Teams
+        run: |
+          echo $KVER
+          echo "MY_SPECIAL_BUTTON=Cool https://this-is-so.cool/" >> $GITHUB_ENV
+          echo "UPGRADEMSG=$KVER $PATCH $REV" >> $GITHUB_ENV
       - name: 📣 Send teams notification
         uses: simbo/msteams-message-card-action@latest
         env:
           MY_AWESOME_BUTTON: Awesome https://this-is-so.awesome/
         with:
           webhook:  ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
-          title: Hello world!
-          message: <p>This is my <strong>awesome message!</strong></p>
+          title:  'Kubernetes Cluster Updates'
+          message: ${{ env.UPGRADEMSG }}
           color: ff69b4
           buttons: |
             ${{ env.MY_SPECIAL_BUTTON }}
