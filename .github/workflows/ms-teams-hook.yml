@@ -82,18 +82,18 @@ jobs:
           echo "MY_SPECIAL_BUTTON=Cool https://this-is-so.cool/" >> $GITHUB_ENV
           PATCH=$(gpg --decrypt --quiet --batch --passphrase "$SECRET" --output - <(echo "${{ needs.acquire-kubernetes-data.outputs.patchInfo }}" | base64 --decode))
           REV=$(gpg --decrypt --quiet --batch --passphrase "$SECRET" --output - <(echo "${{ needs.acquire-kubernetes-data.outputs.revisionInfo }}" | base64 --decode))
-          echo $REV
           echo \"MESSAGE=$ { { env.KVER }} $ { { env.PATCH }}\" >> $GITHUB_ENV
+          echo $MESSAGE
           
       - name: 📣 Send teams notification
         uses: simbo/msteams-message-card-action@latest
         env:
           MY_AWESOME_BUTTON: Awesome https://this-is-so.awesome/
-          MESSAGE: $(echo $UPGRADEMSG)
+          MESSAGEOUT: ${{MESSAGE}}
         with:
           webhook:  ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
           title:  'Kubernetes Cluster Updates'
-          message: ${{env.MESSAGE}}
+          message: ${{env.MESSAGEOUT}}
           color: ff69b4
           buttons: |
             ${{ env.MY_SPECIAL_BUTTON }}
