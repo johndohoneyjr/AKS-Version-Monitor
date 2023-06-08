@@ -33,26 +33,26 @@ jobs:
         run: |
           aks_cluster_info=$(az aks show --name ${{ secrets.AKS_CLUSTER_NAME }} --resource-group ${{ secrets.RESOURCE_GROUP }} --output json)
           aks_cluster_version=$(echo $aks_cluster_info | jq -r '.kubernetesVersion')
-          echo kubeVer=$( echo "Current Kubernetes Version: $aks_cluster_version") >> $GITHUB_OUTPUT
+          echo kubeVer=$( echo "Current Kubernetes Version: $aks_cluster_version") >> $GITHUB_ENV
           
       - name: Get available patches
         id: patch
         run: |
           aks_cluster_upgrades=$(az aks get-upgrades --name ${{ secrets.AKS_CLUSTER_NAME }} --resource-group ${{ secrets.RESOURCE_GROUP }} --output json)
           availablepatches=$(echo $aks_cluster_upgrades | jq -r '.controlPlaneProfile.upgrades[]')
-          echo kubePatch=availablepatches >> $GITHUB_OUTPUT
+          echo kubePatch=availablepatches >> $GITHUB_ENV
           
       - name: Get available revisions
         id: revs
         run: |
           availablerevisions=$(az aks get-versions --location ${{ secrets.LOCATION }} --output json | jq -r '.orchestrators[]')
-          echo kubeRevs=$availablerevisions >> $GITHUB_OUTPUT
+          echo kubeRevs=$availablerevisions >> $GITHUB_ENV
 
       - name: 📣 Send teams notification
         uses: simbo/msteams-message-card-action@latest
         env:
           MY_AWESOME_BUTTON: Awesome https://this-is-so.awesome/
-          MY_SPECIAL_BUTTON: Cool https://this-is-so.cool/" 
+          MY_SPECIAL_BUTTON: Cool https://this-is-so.cool/
           MESSAGEOUT: 'This will work'
         with:
           webhook:  ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
