@@ -81,6 +81,7 @@ jobs:
           echo $KVER
           PATCH=$(gpg --decrypt --quiet --batch --passphrase "$SECRET" --output - <(echo "${{ needs.acquire-kubernetes-data.outputs.patchInfo }}" | base64 --decode))
           REV=$(gpg --decrypt --quiet --batch --passphrase "$SECRET" --output - <(echo "${{ needs.acquire-kubernetes-data.outputs.revisionInfo }}" | base64 --decode))
+          echo $PATCH
           echo "MY_SPECIAL_BUTTON=Cool https://this-is-so.cool/" >> $GITHUB_ENV
           echo "UPGRADEMSG=$KVER $PATCH $REV" >> $GITHUB_ENV
       - name: 📣 Send teams notification
