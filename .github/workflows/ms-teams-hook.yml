@@ -78,4 +78,7 @@ jobs:
           webhook_uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
           title: 'Kubernetes Cluster Updates'
           summary: 'Patch Information'
-          text: ${{ KVER }}
+          text: |
+            ${{ env.KVER }}
+            ${{ env.PATCH }}
+            ${{ env.REV }}
