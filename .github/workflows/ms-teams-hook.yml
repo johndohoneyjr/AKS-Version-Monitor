@@ -91,7 +91,7 @@ jobs:
         with:
           webhook:  ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
           title:  'Kubernetes Cluster Updates'
-          message: ${{ env.KVER }}
+          message: '$KVER'
           color: ff69b4
           buttons: |
             ${{ env.MY_SPECIAL_BUTTON }}
