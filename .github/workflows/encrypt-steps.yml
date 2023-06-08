@@ -1,4 +1,4 @@
-name: MS Teams Webhook
+name: encrypt steps
 
 on:
   workflow_dispatch:
